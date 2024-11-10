@@ -22,7 +22,7 @@ jobs:
         run: |
           cd porfolio
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Ensure this file is in your repo
+          pip install -r requirements.txt
 
       - name: Build Docker image
         run: |
@@ -30,12 +30,15 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/art:latest .  # Changed to 'art'
 
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        run: |
+          echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker --version  # Add to check Docker version
+          docker images  # List Docker images to verify build
 
       - name: Push Docker image
         run: |
           cd porfolio
-          docker push ${{ secrets.DOCKER_USERNAME }}/art:latest  # Changed to 'art'
+          docker push ${{ secrets.DOCKER_USERNAME }}/art:latest
 
       - name: Deploy to GCP
         env:
@@ -49,21 +52,31 @@ jobs:
           echo "${GCP_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
+          # Debugging SSH key issues
+          echo "Listing SSH directory"
+          ls -l ~/.ssh
+          cat ~/.ssh/id_rsa  # Ensure the private key is correctly set
+
           # Add the VM to known hosts to prevent SSH from prompting
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
+          echo "SSH known hosts:"
+          cat ~/.ssh/known_hosts
 
           # SSH into the GCP VM and execute the deployment commands
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa smuggerteey@${GCP_VM_IP} << EOF
+            # Debugging
+            echo "Checking Docker version on the VM"
+            docker --version
+
             # Add user to the docker group if not already added
             sudo usermod -aG docker smuggerteey
-            
-            # Restart shell to recognize group change (might require a re-login, so next time this would be automatic)
+
             # Pull the latest Docker image
             docker pull ${{ secrets.DOCKER_USERNAME }}/art:latest  # Changed to 'art'
 
             # Stop and remove the old container if it exists
             docker stop art || true  # Changed to 'art'
-            docker rm art || true  
+            docker rm art || true  # Changed to 'art'
 
             # Run the Docker container
             docker run -d -p 5000:5000 --name art ${{ secrets.DOCKER_USERNAME }}/art:latest  # Changed to 'art'
