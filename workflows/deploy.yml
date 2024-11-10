@@ -22,18 +22,18 @@ jobs:
         run: |
           cd porfolio
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt  # Ensure requirements.txt is in the 'porfolio' directory
 
       - name: Build Docker image
         run: |
           cd porfolio
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/art:latest .  # Changed to 'art'
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/art:latest .  # Ensure the 'art' tag is correct
 
       - name: Log in to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker --version  # Add to check Docker version
-          docker images  # List Docker images to verify build
+          docker --version  # Debugging: Check Docker version
+          docker images  # Debugging: List Docker images to verify build
 
       - name: Push Docker image
         run: |
@@ -68,8 +68,21 @@ jobs:
             echo "Checking Docker version on the VM"
             docker --version
 
+            # Ensure Docker is installed
+            if ! command -v docker &> /dev/null
+            then
+                echo "Docker not found, installing..."
+                sudo apt-get update
+                sudo apt-get install -y docker.io
+            else
+                echo "Docker is installed"
+            fi
+
             # Add user to the docker group if not already added
             sudo usermod -aG docker smuggerteey
+
+            # Restart shell to recognize group change (might require a re-login, so next time this would be automatic)
+            newgrp docker
 
             # Pull the latest Docker image
             docker pull ${{ secrets.DOCKER_USERNAME }}/art:latest  # Changed to 'art'
