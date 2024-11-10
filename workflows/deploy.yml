@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9' 
+
+      - name: Install dependencies
+        run: |
+          cd porfolio
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Ensure this file is in your repo
+
+      - name: Build Docker image
+        run: |
+          cd porfolio
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/portfolio:latest .
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker image
+        run: |
+          cd porfolio
+          docker push ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+
+      - name: Deploy to GCP
+        env:
+          GCP_VM_IP: ${{ secrets.VM_HOST }}
+          GCP_SSH_PRIVATE_KEY: ${{ secrets.GCP_VM_KEY }}
+        run: |
+          # Create the SSH directory
+          mkdir -p ~/.ssh
+
+          # Write the SSH private key to the file
+          echo "${GCP_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add the VM to known hosts to prevent SSH from prompting
+          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
+
+          # SSH into the GCP VM and execute the deployment commands
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kubwimanaeddy1@${GCP_VM_IP} << EOF
+            # Add user to the docker group if not already added
+            sudo usermod -aG docker kubwimanaeddy1
+            
+            # Restart shell to recognize group change (might require a re-login, so next time this would be automatic)
+            # Pull the latest Docker image
+            docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+
+            # Stop and remove the old container if it exists
+            docker stop portfolio || true
+            docker rm portfolio || true
+
+            # Run the Docker container
+            docker run -d -p 5000:5000 --name portfolio ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+          EOF
+
+                

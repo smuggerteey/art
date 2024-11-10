@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candace Tariro Hunzwi - Portfolio</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    /* Root Variables for Light Mode */
+    :root {
+        --bg-color: #f4f7f9;
+        --text-color: #333;
+        --header-bg-color: #1c2228;
+        --header-text-color: #fff;
+        --link-color: #4f9dff;
+        --section-bg-color: #fff;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Dark Mode Variables */
+    body.dark-mode {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --header-bg-color: #1a1a1a;
+        --header-text-color: #e0e0e0;
+        --link-color: #bb86fc;
+        --section-bg-color: #1e1e1e;
+        --shadow-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Global Styles */
+    body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .header {
+        text-align: center;
+        padding: 2rem 1rem;
+        background-color: var(--header-bg-color);
+        color: var(--header-text-color);
+        border-radius: 12px;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        margin: 0;
+    }
+
+    .header p {
+        font-size: 1.2rem;
+        margin: 0.5rem 0;
+    }
+
+    .profile-links {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .profile-links a {
+        margin: 0 1rem;
+        text-decoration: none;
+        color: var(--link-color);
+        font-weight: bold;
+    }
+
+    .section {
+        margin-top: 2rem;
+        background-color: var(--section-bg-color);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px var(--shadow-color);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .section h2 {
+        font-size: 1.5rem;
+        color: var(--link-color);
+    }
+
+    .project h3 {
+        font-size: 1.3rem;
+        color: var(--text-color);
+    }
+
+    .project p {
+        font-size: 0.9rem;
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    .toggle-container {
+        text-align: right;
+        padding: 1rem;
+    }
+</style>
+</head>
+<body class="dark-mode"> <!-- Set dark mode as default -->
+
+<div class="toggle-container">
+    <!-- Dark Mode Toggle -->
+    <label>
+        <input type="checkbox" id="dark-mode-toggle" checked> <!-- Keep checkbox checked -->
+        <span>🌙</span>
+    </label>
+</div>
+
+<div class="container">
+    <!-- Header Section -->
+    <div class="header">
+
+        <div class="profile-links">
+            <a href="{{ url_for('home') }}">Home</a> 
+            <a href="{{ url_for('tinotenda_portfolio') }}">Nicholas</a>
+            <a href="{{ url_for('eddy_portfolio') }}" >Eddy</a>
+            <a href="{{ url_for('tinotenda_portfolio') }}">Tinotenda</a>
+        </div>
+        
+        <h1>Candace</h1>
+        <p>Computer Science Student | Researcher</p>
+        <p>Passionate about low resource languages, research and development, and building impactful solutions.</p>
+        <div class="profile-links">
+            <a href="https://linkedin.com/in/candacehunzwi" target="_blank">LinkedIn</a>
+            <a href="https://github.com/Candace352" target="_blank">GitHub</a>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="section">
+        <h2>About Me</h2>
+        <p>Hi! I'm Candace, a final-year Computer Science student passionate about AI/ML, data science, and inclusive technology. I work on impactful projects focused on solving real-world challenges in Africa, such as developing language tools for low-resource languages and creating accessible AI solutions. My goal is to leverage technology to ensure no community is left behind in the digital age</p>
+    </div>
+
+    <!-- Skills Section -->
+    <div class="section">
+        <h2>Technical Skills</h2>
+        <ul>
+            <li>Programming: Python, C/C++, Java, Julia</li>
+            <li>Web Development: Flask, HTML/CSS</li>
+            <li>Cloud Platforms: AWS, Google Cloud, Docker</li>
+            <li>Database Management: MySQL, MongoDB</li>
+        </ul>
+    </div>
+
+    <!-- Projects Section -->
+    <div class="section">
+        <h2>Highlighted Projects</h2>
+
+        <div class="project">
+            <h3>Shona Grammar Checker</h3>
+            <p>A specialized grammar checker tailored for the Shona language, incorporating unique linguistic features like noun classes and subject-object agreement. I led the design and development of this tool, conducting data cleaning on over 20,000 sentences and collaborating with linguists to enhance accuracy and usability.</p>
+        </div>
+
+        <div class="project">
+            <h3>Ashesi Course Recommendation System</h3>
+         <p>Built a machine learning-based recommendation system to help students select electives and majors based on academic performance, interests, and career goals. This project leverages collaborative filtering and content-based filtering techniques to provide tailored recommendations for Ashesi University students.</p>
+        </div>
+
+        <div class="project">
+            <h3>Cross-Border Remittance Solution</h3>
+            <p>Part of a team developing a cross-border remittance app for secure money transfers from Ghana, with additional features for investment recommendations. This tech-first approach includes a user-friendly interface and robust security measures to assist users in sending funds and making informed financial decisions.</p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="section">
+        <h2>Get in Touch</h2>
+        <p>If you'd like to collaborate on a project or discuss cloud computing innovations, feel free to reach out through LinkedIn or GitHub.</p>
+    </div>
+</div>
+
+<script>
+    // Dark Mode Toggle Logic
+    const toggle = document.getElementById('dark-mode-toggle');
+
+    // Load the user's preference, defaulting to dark mode if not set
+    if (localStorage.getItem('theme') === 'dark' || !localStorage.getItem('theme')) {
+        document.body.classList.add('dark-mode');
+        toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+        document.body.classList.toggle('dark-mode');
+        // Save the preference
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
+    });
+</script>
+
+</body>
+</html>
