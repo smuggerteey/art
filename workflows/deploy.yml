@@ -63,7 +63,7 @@ jobs:
 
             # Stop and remove the old container if it exists
             docker stop art || true  # Changed to 'art'
-            docker rm art || true  # Changed to 'art'
+            docker rm art || true  
 
             # Run the Docker container
             docker run -d -p 5000:5000 --name art ${{ secrets.DOCKER_USERNAME }}/art:latest  # Changed to 'art'
